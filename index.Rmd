@@ -17,14 +17,9 @@ site: bookdown::bookdown_site
 description: "description"
 url: 'https\://myurl.com'
 github-repo: rstudio/bookdown
-<!-- cover-image: figs/cover.jpg -->
 favicon: "figs/favicon.ico"
+<!-- cover-image: figs/cover.jpg -->
 ---
-
-<head>
-  <link rel="icon" href="figs/favicon.ico" type="image/x-icon"> 
-  <link rel="shortcut icon" href="figs/favicon.ico" type="image/x-icon"> 
-</head>
 
 <!-- set options here; see index.Rmd from bookdown package -->
 ```{r setup, include=F}
