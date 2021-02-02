@@ -1,0 +1,16 @@
+book_filename: bookdown
+repo: https://github.com/rstudio/bookdown/
+output_dir: docs
+clean: [packages.bib, bookdown.bbl]
+delete_merged_file: true
+language:
+  label:
+    fig: "Fig. "
+    tab: "Tab. "
+  ui:
+    edit: "Edit"
+    chapter_name: "Chapter "
+rmd_files:
+  html: ["index.Rmd", "01-notes.Rmd", "02-seawater.Rmd", "03-memory.Rmd", "04-references.Rmd"]
+  latex: ["index.Rmd", "01-notes.Rmd", "02-seawater.Rmd", "03-memory.Rmd", "04-references.Rmd"]
+
