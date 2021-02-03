@@ -1,0 +1,259 @@
+# `bigmemory` and `ff`
+\
+
+## Regular data example
+
+For testing, load the 1$^\circ$ World Ocean Atlas (Levitus) SST [sea surface temperature; @locarnini_etal_2013] and SSS [sea surface salinity; @zweng_etal_2013] data via the `oceadata` package [@R-ocedata]. 
+
+```{r, collapse=T}
+library(ocedata)
+data(levitus, package="ocedata")
+str(levitus) # the data is filled with NA at land
+```
+\
+
+From this, create `bigmemory` [@R-bigmemory] and `ff` [@R-ff] objects.
+
+```{r, collapse=T, message=F}
+sst_base <- levitus$SST # the default format from base package
+library(bigmemory)
+sst_bm <- bigmemory::as.big.matrix(levitus$SST) # bigmemory format
+library(ff)
+sst_ff <- ff::as.ff(levitus$SST) # ff format
+c(identical(sst_base, sst_bm[,]), # note the different index syntax [,] 
+  identical(sst_base, sst_ff[,])) 
+str(sst_base)
+str(describe(sst_bm))
+str(virtual(sst_ff))
+```
+\
+
+The sizes of the three different SST objects highlight the large difference between the standard `base` compared to the `bigmemory` and `ff` packages in terms of memory usage (see my adapted form of [Dirk Eddelbuettel's](https://stackoverflow.com/questions/1358003/tricks-to-manage-the-available-memory-in-an-r-session) `lsos()` function [here](https://github.com/mo0zi/functions/blob/master/myls.r)):
+
+```{r table-sizes, eval=T, collapse=F, message=F}
+#DT::datatable(myls(pattern="sst"), options=list(dom='t'))
+#df <- myls(pattern="sst")
+df <- structure(list(Type = structure(3:1, .Label = c("big.matrix", 
+            "ff_matrix", "matrix"), class = "factor"), `Size [B]` = c(518616, 
+            3504, 696), PrettySize = structure(c(2L, 1L, 3L), .Label = c("3.4 Kb", 
+            "506.5 Kb", "696 bytes"), class = "factor"), RelSize = c(1, 0.007, 
+            0.001), dim1 = c(360, 360, 360), dim2 = c(180, 180, 180)), row.names = c("sst_base", 
+            "sst_ff", "sst_bm"), class = "data.frame")
+library(formattable)
+ft <- formattable::formattable(df, list(
+            RelSize=formattable::formatter("span",
+                      style=function(x) {
+                          formattable::style(display="inline-block",
+                                    direction="ltr",
+                                    "border-radius"="4px",	 	 
+                                    "background-color"="#b8dff3",	 	 
+                                    width=formattable::percent(x))
+                                         })))
+formattable::as.datatable(ft, options=list(dom='t')) 
+```
+
+```{r results="asis", echo=F, eval=F}
+cat("<table>",paste0("<caption>", "(#tab:table-sizes)", "", 
+                     "Size comparison of the SST dataset as `base`, `bigmemory` and `ff` objects.", 
+                     "</caption>"), "</table>", sep="\n")
+```
+\
+
+Manipulations of the `bigmemory` and `ff` objects can be obtained as with `base`. For example, the area-averaged SST can be calculated for all data points within or on the edge of an arbitrary polygon (see Fig. \@ref(fig:sst-ortho)).
+
+```{r, collapse=T}
+library(sp) # for point.in.polygon()
+poly <- list(x=c(-30, -75, -30, -15, -30), # deg longitude
+             y=c(60, 30, 0, 30, 60)) # deg latitude
+lon <- levitus$longitude
+lat <- levitus$latitude
+xy <- expand.grid(lon, lat, KEEP.OUT.ATTRS=F)
+colnames(xy) <- c("x", "y")
+inds <- sp::point.in.polygon(xy$x, xy$y, poly$x, poly$y) # returns indices as vector, not matrix
+inds <- which(inds == 1 | inds == 2) # inside or on edge of polygon
+```
+
+`r length(inds)` (`length(inds)`) out of `r dim(xy)[1]` (`dim(xy)[1]`) 1$^\circ$ data points are located within or on the edge of `poly` (note that in this example the indices would be the same if only the ones completely within were considered, i.e. `inds == 1`). Fig. \@ref(fig:sst-ortho) shows the SST data and the obtained points in orthographic projection and was realized with the `oce` package [@R-oce]. More information on available projections can be found by `vignette("oce")`, `?oce::mapPlot` or in Appendix C of @kelley_2018. The plot was generated like this:
+\
+
+```{r echo=F, eval=F}
+png("figs/sst-ortho.png", height=2666, width=2666, res=400)
+#pdf("figs/sst-ortho.pdf", height=7, width=7)
+```
+
+```{r echo=T, eval=F}
+library(oce) # for mapPlot() etc.
+library(fields) # for colorbar via image.plot()
+
+# make colorbar
+zlim <- range(sst_base, na.rm=T)
+breaks <- pretty(zlim)
+cm <- oce::colormap(breaks=breaks, 
+                    col=oce::oce.colorsPalette(length(breaks)-1))
+
+if (T) {
+    png("test.png", width=8.267717, height=11.69291, units="in", res=300)
+    #pdf("test.pdf", width=8.267717, height=11.69291)
+}
+# define projection
+p <- "+proj=ortho +lat_0=30 +lon_0=-45" # orthographic projection
+
+# open plot device and set margins
+#par(mar=c(0, 0, 0, 5), oma=c(0, 0, 0, 0)) # larger right margin for colorbar
+par(mar=c(0, 0, 0, 0), oma=c(0, 0, 0, 0)) # larger right margin for colorbar
+
+# set coordinate system 
+oce::mapPlot(xy$x, xy$y, projection=p,
+             grid=T, 
+             #type="n", 
+             longitudelim=c(-95, -5), 
+             latitudelim=c(20, 90),
+             axes=F, drawBox=F)
+
+# color everything in gray for land
+oce::mapImage(levitus$longitude, levitus$latitude, 
+              array(1, dim(sst_base)), col="gray66") 
+
+# add the data with colors
+oce::mapImage(levitus$longitude, levitus$latitude, 
+              sst_base, breaks=cm$breaks,
+              filledContour=F, gridder=NA)
+
+# add breaks as contour lines
+oce::mapContour(levitus$longitude, levitus$latitude, 
+                sst_base, levels=cm$breaks, lwd=0.75)
+
+# add grid lines
+oce::mapGrid(dlongitude=15, dlatitude=10, polarCircle=5, 
+             col="black", lwd=0.5)
+
+# add our arbitrary polygon (project piece-wise)
+for (i in 1:(length(poly$x) - 1)) {
+    tmp <- oce::lonlat2map(seq(poly$x[i], poly$x[i+1], l=100),
+                           seq(poly$y[i], poly$y[i+1], l=100),
+                           projection=p)
+    lines(tmp, lwd=1.5)
+} # for i points
+
+# add points within/on the edge of our arbitrary polygon
+tmp <- oce::lonlat2map(xy$x[inds], xy$y[inds], projection=p)
+points(tmp, pch=".")
+
+# add colorbar
+fields::image.plot(zlim=zlim, legend.only=T, lwd=0.5,
+                   breaks=cm$breaks, col=cm$col,
+                   legend.mar=par("mar")[4] + 1)
+mtext(text="SST [°C]", side=4, line=par("mar")[4] - 2)
+```
+
+```{r echo=F, eval=F}
+dev.off()
+```
+
+```{r sst-ortho, echo=F, out.width='66%', fig.align='center', fig.cap='Average (1955-2012) SST [in °C; colors; no data at gray areas; @locarnini_etal_2013] plotted in orthographic projection with the `oce` package [@R-oce]. Black dots mark the center of all data matrix elements within or on the edge of the arbitrary polygon `poly` shown by the thick black line.'}
+knitr::include_graphics("figs/sst-ortho.png")
+```
+\
+
+A subset of the data within the polygon can be obtained from the `bigmemory` and `ff` objects by integer indexing as for the default `base` object. Remember that the returned indices by `sp::point.in.polygon()` are a vector of `nlon*nlat` length, not a `nlon` $\times$ `nlat` dimensioned matrix. That means the data needs to be converted from a 2D matrix to a 1D vector before selecting elements via `inds`.
+
+```{r, collapse=T, echo=F, eval=F, warning=F}
+sub <- ff::ffindexget(sst_vec_ff, ff::ff(inds))
+nainds <- ffbase::is.na.ff(sst_sub_ff)
+nainds <- ffbase::ffwhich(sst_sub_ff, is.na(sst_sub_ff))
+vecFromMat <- ff::ff(sst_base, length=dim(xy)[1])
+
+library(profvis)
+profvis({
+    set.seed(1338)
+    vec <- bigmemory::as.big.matrix(rnorm(1e7)) # ~76 MB
+    vec_sub <- bigmemory::as.big.matrix(vec[inds])
+})
+```
+
+```{r, collapse=T, warning=F}
+sst_vec_base <- as.vector(sst_base)
+sst_sub_base <- sst_vec_base[inds]
+sst_vec_bm <- bigmemory::as.big.matrix(sst_vec_base)
+sst_sub_bm <- bigmemory::as.big.matrix(sst_vec_bm[][inds])
+sst_vec_ff <- ff::as.ff(sst_vec_base)
+sst_sub_ff <- sst_vec_ff[ff::as.ff(inds)]
+c(identical(sst_sub_base, sst_sub_bm[]),
+  identical(sst_sub_base, sst_sub_ff[]))
+```
+\
+
+Now, the average SST within the polygon can be calculated by, for example, the area $A$ -weighted arithmetic mean $\mu_\text{SST} = (\sum_i A_i)^{-1} \, \sum_i (A_i \cdot \text{SST}_i)$, with $i = (1, \dots, `r length(inds)`)$:
+
+```{r, collapse=T}
+library(SDMTools) # for grid.info()
+area_m2 <- grid.info(lats=lat, cellsize=diff(lon)[1])$area
+# bring on same format as the y dimension of the xy vector
+area_m2 <- rep(area_m2, e=length(lon))
+# select within/on the edge of our arbitrary polygon
+area_m2 <- area_m2[inds]
+# set potential NA values also in the area_m2 vector
+if (any(is.na(sst_sub_base))) {
+    area_m2[is.na(sst_sub_base)] <- NA
+}
+sst_mean_base <- sum(sst_sub_base*area_m2, na.rm=T)/sum(area_m2, na.rm=T)
+sst_mean_bm <- sum(sst_sub_bm[]*area_m2, na.rm=T)/sum(area_m2, na.rm=T)
+sst_mean_ff <- sum(sst_sub_ff[]*area_m2, na.rm=T)/sum(area_m2, na.rm=T)
+# todo: esd::aggregate.area(x,is=NULL,it=NULL,FUN=’sum’,na.rm=TRUE,smallx=FALSE)
+c(sst_mean_base, sst_mean_bm, sst_mean_ff)
+c(identical(sst_mean_base, sst_mean_bm),
+  identical(sst_mean_base, sst_mean_ff))
+```
+
+Compare this result to `cdo fldmean`:
+```{r, collapse=T}
+# save the sst field as nc file
+lon_dim <- ncdim_def(name="lon", units="", vals=lon)
+lat_dim <- ncdim_def(name="lat", units="", vals=lat)
+sst_var <- ncvar_def(name="sst", units="degC", dim=list(lon_dim, lat_dim),
+                     missval=NA, prec="double")
+outnc <- nc_create("data/sst_wout_grid.nc", vars=sst_var, force_v4=T)
+ncvar_put(outnc, sst_var, sst_base)
+nc_close(outnc)
+# set a proper grid description for cdo
+system("cdo -setgrid,data/woa_1deg_griddes data/sst_wout_grid.nc data/sst.nc")
+# note: woa_1deg_griddes is obtained from 'cdo griddes woa18_decav_t00_01.nc'
+# https://www.nodc.noaa.gov/OC5/woa13/woa13data.html
+cat(system("cdo griddes data/sst.nc | head -7 | tail -4", intern=T), sep="\n")
+# save our arbitrary polygon
+write.table(poly, file="data/poly.txt", row.names=F, col.names=F)
+cat(system("cat data/poly.txt", intern=T), sep="\n")
+# apply the polygon and calculate the cdo field mean
+system("cdo -maskregion,data/poly.txt data/sst.nc data/sst_mask.nc")
+# need to remove already existing file; dont know why
+system("rm data/sst_mean_cdo.nc")
+system("cdo -fldmean data/sst_mask.nc data/sst_mean_cdo.nc")
+# load the result in R workspace
+ncin <- nc_open("data/sst_mean_cdo.nc")
+sst_mean_cdo <- ncvar_get(ncin, "sst")
+sst_mean_cdo
+identical(sst_mean_base, sst_mean_cdo)
+```
+
+Whops, the `R` and `cdo` results are not the same? They are, but differ after the 12th decimal postion:
+```{r collapse=T}
+print(sst_mean_base, digits=20)
+print(sst_mean_cdo, digits=20)
+sst_mean_base - sst_mean_cdo
+```
+
+In conclusion, for the tested `base`, `bigmemory` and `ff` objects, the area-averaged SST within the polygon (total area $\sim$ `r round(sum(area_m2, na.rm=T)/1e6/1e6)` $\times$ 10^6^ km^2^; Fig. \@ref(fig:sst-ortho)) $\mu_\text{SST}$ = `r sst_mean_base` $^\circ$C. The same result is obtained with `cdo fldmean`. 
+\
+\
+This is a multi-line latex equation example:
+\begin{align}
+\begin{split}
+                      & \text{RF} & = \quad \alpha \, \ln \left( \frac{\text{C}}{\text{C}_0} \right) \\
+\Leftrightarrow \quad & \text{C}_0 \, \exp \left( \frac{\text{RF}}{\alpha} \right) \quad & = \quad \text{C} \,,
+\end{split}
+(\#eq:eq1)
+\end{align}
+
+
+## Irregular data example
+
