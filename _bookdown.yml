@@ -1,8 +1,11 @@
 book_filename: bookdown
-repo: https://github.com/rstudio/bookdown/
+  #repo: https://github.com/rstudio/bookdown/
+repo: https://github.com/chrisdane/chrisdane.github.io
 output_dir: docs
 clean: [packages.bib, bookdown.bbl]
 delete_merged_file: true
+view: https://github.com/chrisdane/chrisdane.github.io/blob/master/%s
+edit: https://github.com/chrisdane/chrisdane.github.io/edit/master/%s
 language:
   label:
     fig: "Fig. "
@@ -11,6 +14,6 @@ language:
     edit: "Edit"
     chapter_name: "Chapter "
 rmd_files:
-  html: ["index.Rmd", "01-notes.Rmd", "02-seawater.Rmd", "03-memory.Rmd", "04-references.Rmd"]
-  latex: ["index.Rmd", "01-notes.Rmd", "02-seawater.Rmd", "03-memory.Rmd", "04-references.Rmd"]
+  html: ["index.Rmd", "cha_notes.Rmd", "cha_seawater.Rmd", "cha_bigmemory-and-ff.Rmd", "cha_references.Rmd"]
+  latex: ["index.Rmd", "cha_notes.Rmd", "cha_seawater.Rmd", "cha_bigmemory-and-ff.Rmd", "cha_references.Rmd"]
 
