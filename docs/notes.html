@@ -526,19 +526,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="notes" class="section level1" number="1">
 <h1><span class="header-section-number">Chapter 1</span> Notes</h1>
 <p>Build the book:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="notes.html#cb3-1" aria-hidden="true" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">render_book</span>(<span class="st">&quot;index.Rmd&quot;</span>, <span class="st">&quot;bookdown::gitbook&quot;</span>)</span>
-<span id="cb3-2"><a href="notes.html#cb3-2" aria-hidden="true" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">render_book</span>(<span class="st">&quot;index.Rmd&quot;</span>, <span class="st">&quot;bookdown::pdf_book&quot;</span>)</span>
-<span id="cb3-3"><a href="notes.html#cb3-3" aria-hidden="true" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">render_book</span>(<span class="st">&quot;index.Rmd&quot;</span>, <span class="st">&quot;all&quot;</span>) <span class="co"># builds all outputs defined in _output.yml</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="notes.html#cb2-1" aria-hidden="true" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">render_book</span>(<span class="st">&quot;index.Rmd&quot;</span>, <span class="st">&quot;bookdown::gitbook&quot;</span>)</span>
+<span id="cb2-2"><a href="notes.html#cb2-2" aria-hidden="true" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">render_book</span>(<span class="st">&quot;index.Rmd&quot;</span>, <span class="st">&quot;bookdown::pdf_book&quot;</span>)</span>
+<span id="cb2-3"><a href="notes.html#cb2-3" aria-hidden="true" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">render_book</span>(<span class="st">&quot;index.Rmd&quot;</span>, <span class="st">&quot;all&quot;</span>) <span class="co"># builds all outputs defined in _output.yml</span></span></code></pre></div>
 <p>Build a specific chapter only:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="notes.html#cb4-1" aria-hidden="true" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">preview_chapter</span>(<span class="st">&quot;chapter.Rmd&quot;</span>, <span class="st">&quot;bookdown::gitbook&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="notes.html#cb3-1" aria-hidden="true" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">preview_chapter</span>(<span class="st">&quot;chapter.Rmd&quot;</span>, <span class="st">&quot;bookdown::gitbook&quot;</span>)</span></code></pre></div>
 <p>Auto-update view in browser (<a href="http://127.0.0.1:4321">http://127.0.0.1:4321</a>) when saving a <code>.Rmd</code> file (from <a href="https://bookdown.org/yihui/bookdown/serve-the-book.html">here</a>). To stop the server, run <code>servr::daemon_stop("140206388818696")</code> or restart your R session:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="notes.html#cb5-1" aria-hidden="true" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">serve_book</span>(<span class="at">dir=</span><span class="st">&quot;.&quot;</span>, <span class="at">output_dir=</span><span class="st">&quot;_book&quot;</span>, <span class="at">preview=</span><span class="cn">TRUE</span>, <span class="at">in_session=</span><span class="cn">TRUE</span>, <span class="at">quiet=</span><span class="cn">FALSE</span>, ...)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="notes.html#cb4-1" aria-hidden="true" tabindex="-1"></a>bookdown<span class="sc">::</span><span class="fu">serve_book</span>(<span class="at">dir=</span><span class="st">&quot;.&quot;</span>, <span class="at">output_dir=</span><span class="st">&quot;_book&quot;</span>, <span class="at">preview=</span><span class="cn">TRUE</span>, <span class="at">in_session=</span><span class="cn">TRUE</span>, <span class="at">quiet=</span><span class="cn">FALSE</span>, ...)</span></code></pre></div>
 <p>Cache time consuming code chunks not to run them in every new knit</p>
 <pre><code>```{r important-computing, cache=T}</code></pre>
 <p>Run a script</p>
 <pre><code>```{r code=readLines(&quot;myscript.R&quot;)}</code></pre>
 <p>Create bib entries from a package:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="notes.html#cb8-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">write_bib</span>(<span class="fu">c</span>(<span class="st">&quot;knitr&quot;</span>, <span class="st">&quot;stringr&quot;</span>), <span class="st">&quot;&quot;</span>, <span class="at">width =</span> <span class="dv">60</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="notes.html#cb7-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">write_bib</span>(<span class="fu">c</span>(<span class="st">&quot;knitr&quot;</span>, <span class="st">&quot;stringr&quot;</span>), <span class="st">&quot;&quot;</span>, <span class="at">width =</span> <span class="dv">60</span>)</span></code></pre></div>
 <p>In labels, no <code>.</code> signs are allowed!</p>
 <div id="code-folding-button" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> Code-folding button</h2>
@@ -579,7 +579,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/chrisdane/chrisdane.github.io/edit/master/cha_notes.Rmd",
+"link": "https://github.com/chrisdane/chrisdane.github.io/edit/master/chapters/notes.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -587,7 +587,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/chrisdane/chrisdane.github.io/blob/master/cha_notes.Rmd",
+"link": "https://github.com/chrisdane/chrisdane.github.io/blob/master/chapters/notes.Rmd",
 "text": null
 },
 "download": ["bookdown.pdf", "bookdown.epub", "bookdown.mobi"],
