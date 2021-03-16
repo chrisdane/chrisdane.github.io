@@ -1,6 +1,6 @@
 --- 
 title: "Geophysical Data Science with R"
-author: "Christopher Danek"
+author: "chrisdane"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 knit: "bookdown::render_book"
 documentclass: krantz
@@ -69,7 +69,7 @@ readr::write_lines(htmlhead, path = "header.html")
 
 Hi  
 
-This page collects examples how I process geophysical data with R.
+This work-in-progress collects examples on how I process geophysical data with R.
 
 ```{r fig.align='center', results="hide", eval=F, echo=F, include=identical(knitr:::pandoc_to(), 'html'), fig.link='https://www.crcpress.com/product/isbn/9781138700109'}
 knitr::include_graphics('figs/cover.jpg', dpi=NA)

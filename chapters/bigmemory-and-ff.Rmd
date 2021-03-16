@@ -3,7 +3,7 @@
 
 ## Regular data example
 
-For testing, load the 1$^\circ$ World Ocean Atlas (Levitus) SST [sea surface temperature; @locarnini_etal_2013] and SSS [sea surface salinity; @zweng_etal_2013] data via the `oceadata` package [@R-ocedata]. 
+For testing, load the 1$^\circ$ World Ocean Atlas (Levitus) sea surface temperature (SST) data from @locarnini_etal_2013 and sea surface salinity (SSS) data from @zweng_etal_2013 data via the `oceadata` package [@R-ocedata]. 
 
 ```{r, collapse=T}
 library(ocedata)
@@ -12,7 +12,7 @@ str(levitus) # the data is filled with NA at land
 ```
 \
 
-From this, create `bigmemory` [@R-bigmemory] and `ff` [@R-ff] objects.
+Based on this SST data, create `bigmemory` [@R-bigmemory] and `ff` [@R-ff] objects:
 
 ```{r, collapse=T, message=F}
 sst_base <- levitus$SST # the default format from base package
@@ -31,16 +31,9 @@ str(virtual(sst_ff))
 The sizes of the three different SST objects highlight the large difference between the standard `base` compared to the `bigmemory` and `ff` packages in terms of memory usage (see my adapted form of [Dirk Eddelbuettel's](https://stackoverflow.com/questions/1358003/tricks-to-manage-the-available-memory-in-an-r-session) `lsos()` function [here](https://github.com/mo0zi/functions/blob/master/myls.r)):
 
 ```{r table-sizes, eval=T, collapse=F, message=F}
-#DT::datatable(myls(pattern="sst"), options=list(dom='t'))
-#df <- myls(pattern="sst")
-df <- structure(list(Type = structure(3:1, .Label = c("big.matrix", 
-            "ff_matrix", "matrix"), class = "factor"), `Size [B]` = c(518616, 
-            3504, 696), PrettySize = structure(c(2L, 1L, 3L), .Label = c("3.4 Kb", 
-            "506.5 Kb", "696 bytes"), class = "factor"), RelSize = c(1, 0.007, 
-            0.001), dim1 = c(360, 360, 360), dim2 = c(180, 180, 180)), row.names = c("sst_base", 
-            "sst_ff", "sst_bm"), class = "data.frame")
+df <- myls(pattern="sst_(base|ff|bm)", show=F)
 library(formattable)
-ft <- formattable::formattable(df, list(
+ft <- formattable::formattable(df$ls, list(
             RelSize=formattable::formatter("span",
                       style=function(x) {
                           formattable::style(display="inline-block",
@@ -49,7 +42,7 @@ ft <- formattable::formattable(df, list(
                                     "background-color"="#b8dff3",	 	 
                                     width=formattable::percent(x))
                                          })))
-formattable::as.datatable(ft, options=list(dom='t')) 
+formattable::as.datatable(ft, options=list(dom='t'), class="display nowrap") 
 ```
 
 ```{r results="asis", echo=F, eval=F}
@@ -76,6 +69,13 @@ inds <- which(inds == 1 | inds == 2) # inside or on edge of polygon
 `r length(inds)` (`length(inds)`) out of `r dim(xy)[1]` (`dim(xy)[1]`) 1$^\circ$ data points are located within or on the edge of `poly` (note that in this example the indices would be the same if only the ones completely within were considered, i.e. `inds == 1`). Fig. \@ref(fig:sst-ortho) shows the SST data and the obtained points in orthographic projection and was realized with the `oce` package [@R-oce]. More information on available projections can be found by `vignette("oce")`, `?oce::mapPlot` or in Appendix C of @kelley_2018. The plot was generated like this:
 \
 
+```{r eval=F, echo=F}
+if (T) {
+    png("test.png", width=8.267717, height=11.69291, units="in", res=300)
+    #pdf("test.pdf", width=8.267717, height=11.69291)
+}
+```
+
 ```{r echo=F, eval=F}
 png("figs/sst-ortho.png", height=2666, width=2666, res=400)
 #pdf("figs/sst-ortho.pdf", height=7, width=7)
@@ -91,10 +91,6 @@ breaks <- pretty(zlim)
 cm <- oce::colormap(breaks=breaks, 
                     col=oce::oce.colorsPalette(length(breaks)-1))
 
-if (T) {
-    png("test.png", width=8.267717, height=11.69291, units="in", res=300)
-    #pdf("test.pdf", width=8.267717, height=11.69291)
-}
 # define projection
 p <- "+proj=ortho +lat_0=30 +lon_0=-45" # orthographic projection
 
@@ -147,7 +143,7 @@ mtext(text="SST [°C]", side=4, line=par("mar")[4] - 2)
 ```
 
 ```{r echo=F, eval=F}
-dev.off()
+if !is.null(dev.list()) dev.off()
 ```
 
 ```{r sst-ortho, echo=F, out.width='66%', fig.align='center', fig.cap='Average (1955-2012) SST [in °C; colors; no data at gray areas; @locarnini_etal_2013] plotted in orthographic projection with the `oce` package [@R-oce]. Black dots mark the center of all data matrix elements within or on the edge of the arbitrary polygon `poly` shown by the thick black line.'}
@@ -208,26 +204,19 @@ c(identical(sst_mean_base, sst_mean_bm),
 Compare this result to `cdo fldmean`:
 ```{r, collapse=T}
 # save the sst field as nc file
-lon_dim <- ncdim_def(name="lon", units="", vals=lon)
-lat_dim <- ncdim_def(name="lat", units="", vals=lat)
+lon_dim <- ncdim_def(name="lon", units="degrees_east", vals=lon)
+lat_dim <- ncdim_def(name="lat", units="degrees_north", vals=lat)
 sst_var <- ncvar_def(name="sst", units="degC", dim=list(lon_dim, lat_dim),
                      missval=NA, prec="double")
-outnc <- nc_create("data/sst_wout_grid.nc", vars=sst_var, force_v4=T)
+outnc <- nc_create("data/sst.nc", vars=sst_var, force_v4=T)
 ncvar_put(outnc, sst_var, sst_base)
 nc_close(outnc)
-# set a proper grid description for cdo
-system("cdo -setgrid,data/woa_1deg_griddes data/sst_wout_grid.nc data/sst.nc")
-# note: woa_1deg_griddes is obtained from 'cdo griddes woa18_decav_t00_01.nc'
-# https://www.nodc.noaa.gov/OC5/woa13/woa13data.html
-cat(system("cdo griddes data/sst.nc | head -7 | tail -4", intern=T), sep="\n")
 # save our arbitrary polygon
 write.table(poly, file="data/poly.txt", row.names=F, col.names=F)
 cat(system("cat data/poly.txt", intern=T), sep="\n")
 # apply the polygon and calculate the cdo field mean
 system("cdo -maskregion,data/poly.txt data/sst.nc data/sst_mask.nc")
-# need to remove already existing file; dont know why
-system("rm data/sst_mean_cdo.nc")
-system("cdo -fldmean data/sst_mask.nc data/sst_mean_cdo.nc")
+system("rm data/sst_mean_cdo.nc; cdo -fldmean data/sst_mask.nc data/sst_mean_cdo.nc")
 # load the result in R workspace
 ncin <- nc_open("data/sst_mean_cdo.nc")
 sst_mean_cdo <- ncvar_get(ncin, "sst")
@@ -245,15 +234,6 @@ sst_mean_base - sst_mean_cdo
 In conclusion, for the tested `base`, `bigmemory` and `ff` objects, the area-averaged SST within the polygon (total area $\sim$ `r round(sum(area_m2, na.rm=T)/1e6/1e6)` $\times$ 10^6^ km^2^; Fig. \@ref(fig:sst-ortho)) $\mu_\text{SST}$ = `r sst_mean_base` $^\circ$C. The same result is obtained with `cdo fldmean`. 
 \
 \
-This is a multi-line latex equation example:
-\begin{align}
-\begin{split}
-                      & \text{RF} & = \quad \alpha \, \ln \left( \frac{\text{C}}{\text{C}_0} \right) \\
-\Leftrightarrow \quad & \text{C}_0 \, \exp \left( \frac{\text{RF}}{\alpha} \right) \quad & = \quad \text{C} \,,
-\end{split}
-(\#eq:eq1)
-\end{align}
-
 
 ## Irregular data example
 

@@ -1,10 +1,12 @@
 # Seawater properties
 \
 
+```{r eval=F, echo=F}
 if (file.exists("~/data/woa/2018/woa18_decav_t00_04.nc") &&
     file.exists("~/data/woa/2018/woa18_decav_t00_04.nc")) {
 
 } # if woa data exists
+```
 
 ## gravitational acceleration
 

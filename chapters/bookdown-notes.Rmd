@@ -1,6 +1,4 @@
-\mainmatter
-
-# Notes
+# Bookdown Notes
 
 Build the book:
 
@@ -36,6 +34,15 @@ knitr::write_bib(c("knitr", "stringr"), "", width = 60)
 ```
 
 In labels, no `.` signs are allowed!
+
+This is a multi-line latex equation example:
+\begin{align}
+\begin{split}
+                      & \text{RF} & = \quad \alpha \, \ln \left( \frac{\text{C}}{\text{C}_0} \right) \\
+\Leftrightarrow \quad & \text{C}_0 \, \exp \left( \frac{\text{RF}}{\alpha} \right) \quad & = \quad \text{C} \,,
+\end{split}
+(\#eq:eq1)
+\end{align}
 
 ## Code-folding button
 
