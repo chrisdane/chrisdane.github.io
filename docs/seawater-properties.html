@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 1 Seawater properties | Geophysical Data Science with R</title>
   <meta name="description" content="description" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.37 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 1 Seawater properties | Geophysical Data Science with R" />
   <meta property="og:type" content="book" />
-  <meta property="og:url" content="https://myurl.com" />
   
   <meta property="og:description" content="description" />
   <meta name="github-repo" content="rstudio/bookdown" />
@@ -32,8 +31,8 @@
   <link rel="shortcut icon" href="figs/favicon.ico" type="image/x-icon" />
 <link rel="prev" href="index.html"/>
 <link rel="next" href="bigmemory-and-ff.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,15 +48,17 @@
 
 
 
-
-<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
 <link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="libs/datatables-binding-0.17/datatables.js"></script>
-<link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
-<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+<script src="libs/datatables-binding-0.31/datatables.js"></script>
+<link href="libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
 
 <script>
 /* ========================================================================
@@ -410,7 +411,7 @@ $(document).ready(function () {
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -420,7 +421,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -446,7 +447,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -459,7 +460,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -471,6 +472,34 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 <link rel="stylesheet" href="css/style.css" type="text/css" />
@@ -523,38 +552,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="seawater-properties" class="section level1" number="1">
-<h1><span class="header-section-number">Chapter 1</span> Seawater properties</h1>
+<div id="seawater-properties" class="section level1 hasAnchor" number="1">
+<h1><span class="header-section-number">Chapter 1</span> Seawater properties<a href="seawater-properties.html#seawater-properties" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p><br />
 </p>
-<div id="gravitational-acceleration" class="section level2" number="1.1">
-<h2><span class="header-section-number">1.1</span> gravitational acceleration</h2>
+<div id="gravitational-acceleration" class="section level2 hasAnchor" number="1.1">
+<h2><span class="header-section-number">1.1</span> gravitational acceleration<a href="seawater-properties.html#gravitational-acceleration" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Fig. <a href="seawater-properties.html#fig:gsw-g">1.1</a> shows the influence of latitude and pressure <span class="math inline">\(p\)</span> on gravitational acceleration <span class="math inline">\(g\)</span>.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="seawater-properties.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gsw)</span>
-<span id="cb2-2"><a href="seawater-properties.html#cb2-2" aria-hidden="true" tabindex="-1"></a>lats <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">90</span>, <span class="at">l=</span><span class="dv">100</span>)</span>
-<span id="cb2-3"><a href="seawater-properties.html#cb2-3" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">6000</span>, <span class="at">l=</span><span class="dv">100</span>)</span>
-<span id="cb2-4"><a href="seawater-properties.html#cb2-4" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">outer</span>(lats, p, <span class="cf">function</span>(x,y) gsw<span class="sc">::</span><span class="fu">gsw_grav</span>(<span class="at">latitude=</span>x, <span class="at">p=</span>y))</span>
-<span id="cb2-5"><a href="seawater-properties.html#cb2-5" aria-hidden="true" tabindex="-1"></a>g_rel_to_981 <span class="ot">&lt;-</span> g<span class="sc">/</span><span class="fl">9.81</span><span class="sc">*</span><span class="dv">100</span> <span class="sc">-</span> <span class="dv">100</span></span>
-<span id="cb2-6"><a href="seawater-properties.html#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">4</span>, <span class="dv">2</span>))</span>
-<span id="cb2-7"><a href="seawater-properties.html#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lats, p, <span class="at">t=</span><span class="st">&quot;n&quot;</span>, <span class="at">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">yaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="fu">max</span>(p), <span class="fu">min</span>(p)),</span>
-<span id="cb2-8"><a href="seawater-properties.html#cb2-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">&quot;Latitude [°]&quot;</span>, <span class="at">ylab=</span><span class="cn">NA</span>,</span>
-<span id="cb2-9"><a href="seawater-properties.html#cb2-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">xaxs=</span><span class="st">&quot;i&quot;</span>, <span class="at">yaxs=</span><span class="st">&quot;i&quot;</span>)</span>
-<span id="cb2-10"><a href="seawater-properties.html#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span><span class="fu">pretty</span>(lats, <span class="at">n=</span><span class="dv">10</span>))</span>
-<span id="cb2-11"><a href="seawater-properties.html#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span><span class="fu">pretty</span>(p, <span class="at">n=</span><span class="dv">10</span>), <span class="at">las=</span><span class="dv">2</span>)</span>
-<span id="cb2-12"><a href="seawater-properties.html#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;Depth [dbar]&quot;</span>, <span class="at">side=</span><span class="dv">2</span>, <span class="at">line=</span><span class="dv">4</span>)</span>
-<span id="cb2-13"><a href="seawater-properties.html#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="dv">45</span>, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>)</span>
-<span id="cb2-14"><a href="seawater-properties.html#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">contour</span>(lats, p, g, <span class="at">levels=</span><span class="fu">pretty</span>(g, <span class="at">n=</span><span class="dv">10</span>), <span class="at">labcex=</span><span class="dv">1</span>, <span class="at">add=</span>T)</span>
-<span id="cb2-15"><a href="seawater-properties.html#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">contour</span>(lats, p, g, <span class="at">levels=</span><span class="fl">9.81</span>, <span class="at">col=</span><span class="st">&quot;red&quot;</span>, <span class="at">add=</span>T, <span class="at">drawlabels=</span>F)</span>
-<span id="cb2-16"><a href="seawater-properties.html#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lats, p, <span class="at">t=</span><span class="st">&quot;n&quot;</span>, <span class="at">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">yaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="fu">max</span>(p), <span class="fu">min</span>(p)),</span>
-<span id="cb2-17"><a href="seawater-properties.html#cb2-17" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">&quot;Latitude [°]&quot;</span>, <span class="at">ylab=</span><span class="cn">NA</span>,</span>
-<span id="cb2-18"><a href="seawater-properties.html#cb2-18" aria-hidden="true" tabindex="-1"></a>     <span class="at">xaxs=</span><span class="st">&quot;i&quot;</span>, <span class="at">yaxs=</span><span class="st">&quot;i&quot;</span>)</span>
-<span id="cb2-19"><a href="seawater-properties.html#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span><span class="fu">pretty</span>(lats, <span class="at">n=</span><span class="dv">10</span>))</span>
-<span id="cb2-20"><a href="seawater-properties.html#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span><span class="fu">pretty</span>(p, <span class="at">n=</span><span class="dv">10</span>), <span class="at">las=</span><span class="dv">2</span>)</span>
-<span id="cb2-21"><a href="seawater-properties.html#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;Depth [dbar]&quot;</span>, <span class="at">side=</span><span class="dv">2</span>, <span class="at">line=</span><span class="dv">4</span>)</span>
-<span id="cb2-22"><a href="seawater-properties.html#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="dv">45</span>, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>)</span>
-<span id="cb2-23"><a href="seawater-properties.html#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="fu">contour</span>(lats, p, g_rel_to_981, <span class="at">levels=</span><span class="fu">pretty</span>(g_rel_to_981, <span class="at">n=</span><span class="dv">10</span>), </span>
-<span id="cb2-24"><a href="seawater-properties.html#cb2-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">labels=</span><span class="fu">pretty</span>(g_rel_to_981, <span class="at">n=</span><span class="dv">10</span>), <span class="at">labcex=</span><span class="dv">1</span>, <span class="at">add=</span>T)</span></code></pre></div>
-<div class="figure" style="text-align: center"><span id="fig:gsw-g"></span>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="seawater-properties.html#cb3-1" tabindex="-1"></a><span class="fu">library</span>(gsw)</span>
+<span id="cb3-2"><a href="seawater-properties.html#cb3-2" tabindex="-1"></a>lats <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">90</span>, <span class="at">l=</span><span class="dv">100</span>)</span>
+<span id="cb3-3"><a href="seawater-properties.html#cb3-3" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">6000</span>, <span class="at">l=</span><span class="dv">100</span>)</span>
+<span id="cb3-4"><a href="seawater-properties.html#cb3-4" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">outer</span>(lats, p, <span class="cf">function</span>(x,y) gsw<span class="sc">::</span><span class="fu">gsw_grav</span>(<span class="at">latitude=</span>x, <span class="at">p=</span>y))</span>
+<span id="cb3-5"><a href="seawater-properties.html#cb3-5" tabindex="-1"></a>g_rel_to_981 <span class="ot">&lt;-</span> g<span class="sc">/</span><span class="fl">9.81</span><span class="sc">*</span><span class="dv">100</span> <span class="sc">-</span> <span class="dv">100</span></span>
+<span id="cb3-6"><a href="seawater-properties.html#cb3-6" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">4</span>, <span class="dv">2</span>))</span>
+<span id="cb3-7"><a href="seawater-properties.html#cb3-7" tabindex="-1"></a><span class="fu">plot</span>(lats, p, <span class="at">t=</span><span class="st">&quot;n&quot;</span>, <span class="at">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">yaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="fu">max</span>(p), <span class="fu">min</span>(p)),</span>
+<span id="cb3-8"><a href="seawater-properties.html#cb3-8" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">&quot;Latitude [°]&quot;</span>, <span class="at">ylab=</span><span class="cn">NA</span>,</span>
+<span id="cb3-9"><a href="seawater-properties.html#cb3-9" tabindex="-1"></a>     <span class="at">xaxs=</span><span class="st">&quot;i&quot;</span>, <span class="at">yaxs=</span><span class="st">&quot;i&quot;</span>)</span>
+<span id="cb3-10"><a href="seawater-properties.html#cb3-10" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span><span class="fu">pretty</span>(lats, <span class="at">n=</span><span class="dv">10</span>))</span>
+<span id="cb3-11"><a href="seawater-properties.html#cb3-11" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span><span class="fu">pretty</span>(p, <span class="at">n=</span><span class="dv">10</span>), <span class="at">las=</span><span class="dv">2</span>)</span>
+<span id="cb3-12"><a href="seawater-properties.html#cb3-12" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;Depth [dbar]&quot;</span>, <span class="at">side=</span><span class="dv">2</span>, <span class="at">line=</span><span class="dv">4</span>)</span>
+<span id="cb3-13"><a href="seawater-properties.html#cb3-13" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="dv">45</span>, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>)</span>
+<span id="cb3-14"><a href="seawater-properties.html#cb3-14" tabindex="-1"></a><span class="fu">contour</span>(lats, p, g, <span class="at">levels=</span><span class="fu">pretty</span>(g, <span class="at">n=</span><span class="dv">10</span>), <span class="at">labcex=</span><span class="dv">1</span>, <span class="at">add=</span>T)</span>
+<span id="cb3-15"><a href="seawater-properties.html#cb3-15" tabindex="-1"></a><span class="fu">contour</span>(lats, p, g, <span class="at">levels=</span><span class="fl">9.81</span>, <span class="at">col=</span><span class="st">&quot;red&quot;</span>, <span class="at">add=</span>T, <span class="at">drawlabels=</span>F)</span>
+<span id="cb3-16"><a href="seawater-properties.html#cb3-16" tabindex="-1"></a><span class="fu">plot</span>(lats, p, <span class="at">t=</span><span class="st">&quot;n&quot;</span>, <span class="at">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">yaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="fu">max</span>(p), <span class="fu">min</span>(p)),</span>
+<span id="cb3-17"><a href="seawater-properties.html#cb3-17" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">&quot;Latitude [°]&quot;</span>, <span class="at">ylab=</span><span class="cn">NA</span>,</span>
+<span id="cb3-18"><a href="seawater-properties.html#cb3-18" tabindex="-1"></a>     <span class="at">xaxs=</span><span class="st">&quot;i&quot;</span>, <span class="at">yaxs=</span><span class="st">&quot;i&quot;</span>)</span>
+<span id="cb3-19"><a href="seawater-properties.html#cb3-19" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span><span class="fu">pretty</span>(lats, <span class="at">n=</span><span class="dv">10</span>))</span>
+<span id="cb3-20"><a href="seawater-properties.html#cb3-20" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span><span class="fu">pretty</span>(p, <span class="at">n=</span><span class="dv">10</span>), <span class="at">las=</span><span class="dv">2</span>)</span>
+<span id="cb3-21"><a href="seawater-properties.html#cb3-21" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;Depth [dbar]&quot;</span>, <span class="at">side=</span><span class="dv">2</span>, <span class="at">line=</span><span class="dv">4</span>)</span>
+<span id="cb3-22"><a href="seawater-properties.html#cb3-22" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="dv">45</span>, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>)</span>
+<span id="cb3-23"><a href="seawater-properties.html#cb3-23" tabindex="-1"></a><span class="fu">contour</span>(lats, p, g_rel_to_981, <span class="at">levels=</span><span class="fu">pretty</span>(g_rel_to_981, <span class="at">n=</span><span class="dv">10</span>), </span>
+<span id="cb3-24"><a href="seawater-properties.html#cb3-24" tabindex="-1"></a>        <span class="at">labels=</span><span class="fu">pretty</span>(g_rel_to_981, <span class="at">n=</span><span class="dv">10</span>), <span class="at">labcex=</span><span class="dv">1</span>, <span class="at">add=</span>T)</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:gsw-g"></span>
 <img src="bookdown_files/figure-html/gsw-g-1.svg" alt="Gravitational acceleration $g$ as a function of latitude and pressure $p$ (in m s$^{-2}$, left) and relative to 9.81 m s$^{-2}$ (in %, right)." width="1152" />
 <p class="caption">
 Fig. 1.1: Gravitational acceleration <span class="math inline">\(g\)</span> as a function of latitude and pressure <span class="math inline">\(p\)</span> (in m s<span class="math inline">\(^{-2}\)</span>, left) and relative to 9.81 m s<span class="math inline">\(^{-2}\)</span> (in %, right).
@@ -563,52 +592,52 @@ Fig. 1.1: Gravitational acceleration <span class="math inline">\(g\)</span> as a
 <p><br />
 </p>
 </div>
-<div id="heat-capacity-of-seawater" class="section level2" number="1.2">
-<h2><span class="header-section-number">1.2</span> heat capacity of seawater</h2>
+<div id="heat-capacity-of-seawater" class="section level2 hasAnchor" number="1.2">
+<h2><span class="header-section-number">1.2</span> heat capacity of seawater<a href="seawater-properties.html#heat-capacity-of-seawater" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Fig. <a href="seawater-properties.html#fig:gsw-cp">1.2</a> shows the influence of in-situ temperature <span class="math inline">\(t\)</span> and absolute salinity <span class="math inline">\(S_A\)</span> on heat capacity of seawater <span class="math inline">\(c_\text{p}\)</span> at different pressure <span class="math inline">\(p\)</span> levels.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="seawater-properties.html#cb3-1" aria-hidden="true" tabindex="-1"></a>cp0 <span class="ot">&lt;-</span> <span class="fl">3991.86795711963</span> <span class="co"># J/(kg K); from GSW-R/src/gsw_internal_const.h</span></span>
-<span id="cb3-2"><a href="seawater-properties.html#cb3-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1000</span>, <span class="dv">2000</span>, <span class="dv">4000</span>)</span>
-<span id="cb3-3"><a href="seawater-properties.html#cb3-3" aria-hidden="true" tabindex="-1"></a>SA <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">40</span>, <span class="at">l=</span><span class="dv">100</span>)</span>
-<span id="cb3-4"><a href="seawater-properties.html#cb3-4" aria-hidden="true" tabindex="-1"></a>t_insitu <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">30</span>, <span class="at">l=</span><span class="dv">100</span>)</span>
-<span id="cb3-5"><a href="seawater-properties.html#cb3-5" aria-hidden="true" tabindex="-1"></a>cps <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim=</span><span class="fu">c</span>(<span class="fu">length</span>(SA), <span class="fu">length</span>(SA), <span class="fu">length</span>(p)))</span>
-<span id="cb3-6"><a href="seawater-properties.html#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(p)) {</span>
-<span id="cb3-7"><a href="seawater-properties.html#cb3-7" aria-hidden="true" tabindex="-1"></a>    cps[,,i] <span class="ot">&lt;-</span> <span class="fu">outer</span>(SA, t_insitu, <span class="cf">function</span>(x,y) gsw<span class="sc">::</span><span class="fu">gsw_cp_t_exact</span>(<span class="at">SA=</span>x, <span class="at">t=</span>y, <span class="at">p=</span>p[i]))</span>
-<span id="cb3-8"><a href="seawater-properties.html#cb3-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-9"><a href="seawater-properties.html#cb3-9" aria-hidden="true" tabindex="-1"></a>zlim <span class="ot">&lt;-</span> <span class="fu">range</span>(cps, <span class="at">na.rm=</span>T)</span>
-<span id="cb3-10"><a href="seawater-properties.html#cb3-10" aria-hidden="true" tabindex="-1"></a>zat <span class="ot">&lt;-</span> <span class="fu">pretty</span>(zlim, <span class="at">n=</span><span class="dv">15</span>)</span>
-<span id="cb3-11"><a href="seawater-properties.html#cb3-11" aria-hidden="true" tabindex="-1"></a>cps_rel <span class="ot">&lt;-</span> cps<span class="sc">/</span>cp0<span class="sc">*</span><span class="dv">100</span> <span class="sc">-</span> <span class="dv">100</span></span>
-<span id="cb3-12"><a href="seawater-properties.html#cb3-12" aria-hidden="true" tabindex="-1"></a>zlim_rel <span class="ot">&lt;-</span> <span class="fu">range</span>(cps_rel, <span class="at">na.rm=</span>T)</span>
-<span id="cb3-13"><a href="seawater-properties.html#cb3-13" aria-hidden="true" tabindex="-1"></a>zat_rel <span class="ot">&lt;-</span> <span class="fu">pretty</span>(zlim_rel, <span class="at">n=</span><span class="dv">15</span>)</span>
-<span id="cb3-14"><a href="seawater-properties.html#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="fu">length</span>(p), <span class="dv">2</span>), <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">4</span>, <span class="dv">2</span>))</span>
-<span id="cb3-15"><a href="seawater-properties.html#cb3-15" aria-hidden="true" tabindex="-1"></a>xat <span class="ot">&lt;-</span> <span class="fu">pretty</span>(t_insitu, <span class="at">n=</span><span class="dv">15</span>)</span>
-<span id="cb3-16"><a href="seawater-properties.html#cb3-16" aria-hidden="true" tabindex="-1"></a>yat <span class="ot">&lt;-</span> <span class="fu">pretty</span>(SA, <span class="at">n=</span><span class="dv">15</span>)</span>
-<span id="cb3-17"><a href="seawater-properties.html#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(p)) { </span>
-<span id="cb3-18"><a href="seawater-properties.html#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># absolute plots</span></span>
-<span id="cb3-19"><a href="seawater-properties.html#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(t_insitu, SA, <span class="at">t=</span><span class="st">&quot;n&quot;</span>, <span class="at">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">yaxt=</span><span class="st">&quot;n&quot;</span>,</span>
-<span id="cb3-20"><a href="seawater-properties.html#cb3-20" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">&quot;In-situ temperature [°C]&quot;</span>, <span class="at">ylab=</span><span class="cn">NA</span>,</span>
-<span id="cb3-21"><a href="seawater-properties.html#cb3-21" aria-hidden="true" tabindex="-1"></a>         <span class="at">xaxs=</span><span class="st">&quot;i&quot;</span>, <span class="at">yaxs=</span><span class="st">&quot;i&quot;</span>)</span>
-<span id="cb3-22"><a href="seawater-properties.html#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">v=</span>xat, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
-<span id="cb3-23"><a href="seawater-properties.html#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">h=</span>yat, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
-<span id="cb3-24"><a href="seawater-properties.html#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>xat)</span>
-<span id="cb3-25"><a href="seawater-properties.html#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span>yat, <span class="at">las=</span><span class="dv">2</span>)</span>
-<span id="cb3-26"><a href="seawater-properties.html#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtext</span>(<span class="st">&quot;Absolute salinity [g/kg]&quot;</span>, <span class="at">side=</span><span class="dv">2</span>, <span class="at">line=</span><span class="dv">4</span>)</span>
-<span id="cb3-27"><a href="seawater-properties.html#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">contour</span>(t_insitu, SA, cps[,,i], <span class="at">levels=</span>zat, <span class="at">labcex=</span><span class="dv">1</span>, <span class="at">add=</span>T)</span>
-<span id="cb3-28"><a href="seawater-properties.html#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">contour</span>(t_insitu, SA, cps[,,i], <span class="at">levels=</span>cp0, <span class="at">labcex=</span><span class="dv">1</span>, <span class="at">col=</span><span class="st">&quot;red&quot;</span>, <span class="at">add=</span>T)</span>
-<span id="cb3-29"><a href="seawater-properties.html#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="fu">paste0</span>(p[i], <span class="st">&quot; dbar&quot;</span>), <span class="at">lty=</span><span class="cn">NA</span>, <span class="at">pch=</span><span class="cn">NA</span>, <span class="at">lwd=</span><span class="cn">NA</span>, <span class="at">bty=</span><span class="st">&quot;n&quot;</span>)</span>
-<span id="cb3-30"><a href="seawater-properties.html#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># relative plots</span></span>
-<span id="cb3-31"><a href="seawater-properties.html#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(t_insitu, SA, <span class="at">t=</span><span class="st">&quot;n&quot;</span>, <span class="at">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">yaxt=</span><span class="st">&quot;n&quot;</span>,</span>
-<span id="cb3-32"><a href="seawater-properties.html#cb3-32" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">&quot;In-situ temperature [°C]&quot;</span>, <span class="at">ylab=</span><span class="cn">NA</span>,</span>
-<span id="cb3-33"><a href="seawater-properties.html#cb3-33" aria-hidden="true" tabindex="-1"></a>         <span class="at">xaxs=</span><span class="st">&quot;i&quot;</span>, <span class="at">yaxs=</span><span class="st">&quot;i&quot;</span>)</span>
-<span id="cb3-34"><a href="seawater-properties.html#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">v=</span>xat, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
-<span id="cb3-35"><a href="seawater-properties.html#cb3-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">h=</span>yat, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
-<span id="cb3-36"><a href="seawater-properties.html#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>xat)</span>
-<span id="cb3-37"><a href="seawater-properties.html#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span>yat, <span class="at">las=</span><span class="dv">2</span>)</span>
-<span id="cb3-38"><a href="seawater-properties.html#cb3-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtext</span>(<span class="st">&quot;Absolute salinity [g/kg]&quot;</span>, <span class="at">side=</span><span class="dv">2</span>, <span class="at">line=</span><span class="dv">4</span>)</span>
-<span id="cb3-39"><a href="seawater-properties.html#cb3-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">contour</span>(t_insitu, SA, cps_rel[,,i], <span class="at">levels=</span>zat_rel, </span>
-<span id="cb3-40"><a href="seawater-properties.html#cb3-40" aria-hidden="true" tabindex="-1"></a>            <span class="at">labels=</span>zat_rel, <span class="at">labcex=</span><span class="dv">1</span>, <span class="at">add=</span>T)</span>
-<span id="cb3-41"><a href="seawater-properties.html#cb3-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="fu">paste0</span>(p[i], <span class="st">&quot; dbar&quot;</span>), <span class="at">lty=</span><span class="cn">NA</span>, <span class="at">pch=</span><span class="cn">NA</span>, <span class="at">lwd=</span><span class="cn">NA</span>, <span class="at">bty=</span><span class="st">&quot;n&quot;</span>)</span>
-<span id="cb3-42"><a href="seawater-properties.html#cb3-42" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<div class="figure" style="text-align: center"><span id="fig:gsw-cp"></span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="seawater-properties.html#cb4-1" tabindex="-1"></a>cp0 <span class="ot">&lt;-</span> <span class="fl">3991.86795711963</span> <span class="co"># J/(kg K); from GSW-R/src/gsw_internal_const.h</span></span>
+<span id="cb4-2"><a href="seawater-properties.html#cb4-2" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1000</span>, <span class="dv">2000</span>, <span class="dv">4000</span>)</span>
+<span id="cb4-3"><a href="seawater-properties.html#cb4-3" tabindex="-1"></a>SA <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">40</span>, <span class="at">l=</span><span class="dv">100</span>)</span>
+<span id="cb4-4"><a href="seawater-properties.html#cb4-4" tabindex="-1"></a>t_insitu <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">30</span>, <span class="at">l=</span><span class="dv">100</span>)</span>
+<span id="cb4-5"><a href="seawater-properties.html#cb4-5" tabindex="-1"></a>cps <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim=</span><span class="fu">c</span>(<span class="fu">length</span>(SA), <span class="fu">length</span>(SA), <span class="fu">length</span>(p)))</span>
+<span id="cb4-6"><a href="seawater-properties.html#cb4-6" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(p)) {</span>
+<span id="cb4-7"><a href="seawater-properties.html#cb4-7" tabindex="-1"></a>    cps[,,i] <span class="ot">&lt;-</span> <span class="fu">outer</span>(SA, t_insitu, <span class="cf">function</span>(x,y) gsw<span class="sc">::</span><span class="fu">gsw_cp_t_exact</span>(<span class="at">SA=</span>x, <span class="at">t=</span>y, <span class="at">p=</span>p[i]))</span>
+<span id="cb4-8"><a href="seawater-properties.html#cb4-8" tabindex="-1"></a>}</span>
+<span id="cb4-9"><a href="seawater-properties.html#cb4-9" tabindex="-1"></a>zlim <span class="ot">&lt;-</span> <span class="fu">range</span>(cps, <span class="at">na.rm=</span>T)</span>
+<span id="cb4-10"><a href="seawater-properties.html#cb4-10" tabindex="-1"></a>zat <span class="ot">&lt;-</span> <span class="fu">pretty</span>(zlim, <span class="at">n=</span><span class="dv">15</span>)</span>
+<span id="cb4-11"><a href="seawater-properties.html#cb4-11" tabindex="-1"></a>cps_rel <span class="ot">&lt;-</span> cps<span class="sc">/</span>cp0<span class="sc">*</span><span class="dv">100</span> <span class="sc">-</span> <span class="dv">100</span></span>
+<span id="cb4-12"><a href="seawater-properties.html#cb4-12" tabindex="-1"></a>zlim_rel <span class="ot">&lt;-</span> <span class="fu">range</span>(cps_rel, <span class="at">na.rm=</span>T)</span>
+<span id="cb4-13"><a href="seawater-properties.html#cb4-13" tabindex="-1"></a>zat_rel <span class="ot">&lt;-</span> <span class="fu">pretty</span>(zlim_rel, <span class="at">n=</span><span class="dv">15</span>)</span>
+<span id="cb4-14"><a href="seawater-properties.html#cb4-14" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="fu">length</span>(p), <span class="dv">2</span>), <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">4</span>, <span class="dv">2</span>))</span>
+<span id="cb4-15"><a href="seawater-properties.html#cb4-15" tabindex="-1"></a>xat <span class="ot">&lt;-</span> <span class="fu">pretty</span>(t_insitu, <span class="at">n=</span><span class="dv">15</span>)</span>
+<span id="cb4-16"><a href="seawater-properties.html#cb4-16" tabindex="-1"></a>yat <span class="ot">&lt;-</span> <span class="fu">pretty</span>(SA, <span class="at">n=</span><span class="dv">15</span>)</span>
+<span id="cb4-17"><a href="seawater-properties.html#cb4-17" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(p)) { </span>
+<span id="cb4-18"><a href="seawater-properties.html#cb4-18" tabindex="-1"></a>    <span class="co"># absolute plots</span></span>
+<span id="cb4-19"><a href="seawater-properties.html#cb4-19" tabindex="-1"></a>    <span class="fu">plot</span>(t_insitu, SA, <span class="at">t=</span><span class="st">&quot;n&quot;</span>, <span class="at">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">yaxt=</span><span class="st">&quot;n&quot;</span>,</span>
+<span id="cb4-20"><a href="seawater-properties.html#cb4-20" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">&quot;In-situ temperature [°C]&quot;</span>, <span class="at">ylab=</span><span class="cn">NA</span>,</span>
+<span id="cb4-21"><a href="seawater-properties.html#cb4-21" tabindex="-1"></a>         <span class="at">xaxs=</span><span class="st">&quot;i&quot;</span>, <span class="at">yaxs=</span><span class="st">&quot;i&quot;</span>)</span>
+<span id="cb4-22"><a href="seawater-properties.html#cb4-22" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">v=</span>xat, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb4-23"><a href="seawater-properties.html#cb4-23" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">h=</span>yat, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb4-24"><a href="seawater-properties.html#cb4-24" tabindex="-1"></a>    <span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>xat)</span>
+<span id="cb4-25"><a href="seawater-properties.html#cb4-25" tabindex="-1"></a>    <span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span>yat, <span class="at">las=</span><span class="dv">2</span>)</span>
+<span id="cb4-26"><a href="seawater-properties.html#cb4-26" tabindex="-1"></a>    <span class="fu">mtext</span>(<span class="st">&quot;Absolute salinity [g/kg]&quot;</span>, <span class="at">side=</span><span class="dv">2</span>, <span class="at">line=</span><span class="dv">4</span>)</span>
+<span id="cb4-27"><a href="seawater-properties.html#cb4-27" tabindex="-1"></a>    <span class="fu">contour</span>(t_insitu, SA, cps[,,i], <span class="at">levels=</span>zat, <span class="at">labcex=</span><span class="dv">1</span>, <span class="at">add=</span>T)</span>
+<span id="cb4-28"><a href="seawater-properties.html#cb4-28" tabindex="-1"></a>    <span class="fu">contour</span>(t_insitu, SA, cps[,,i], <span class="at">levels=</span>cp0, <span class="at">labcex=</span><span class="dv">1</span>, <span class="at">col=</span><span class="st">&quot;red&quot;</span>, <span class="at">add=</span>T)</span>
+<span id="cb4-29"><a href="seawater-properties.html#cb4-29" tabindex="-1"></a>    <span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="fu">paste0</span>(p[i], <span class="st">&quot; dbar&quot;</span>), <span class="at">lty=</span><span class="cn">NA</span>, <span class="at">pch=</span><span class="cn">NA</span>, <span class="at">lwd=</span><span class="cn">NA</span>, <span class="at">bty=</span><span class="st">&quot;n&quot;</span>)</span>
+<span id="cb4-30"><a href="seawater-properties.html#cb4-30" tabindex="-1"></a>    <span class="co"># relative plots</span></span>
+<span id="cb4-31"><a href="seawater-properties.html#cb4-31" tabindex="-1"></a>    <span class="fu">plot</span>(t_insitu, SA, <span class="at">t=</span><span class="st">&quot;n&quot;</span>, <span class="at">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">yaxt=</span><span class="st">&quot;n&quot;</span>,</span>
+<span id="cb4-32"><a href="seawater-properties.html#cb4-32" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">&quot;In-situ temperature [°C]&quot;</span>, <span class="at">ylab=</span><span class="cn">NA</span>,</span>
+<span id="cb4-33"><a href="seawater-properties.html#cb4-33" tabindex="-1"></a>         <span class="at">xaxs=</span><span class="st">&quot;i&quot;</span>, <span class="at">yaxs=</span><span class="st">&quot;i&quot;</span>)</span>
+<span id="cb4-34"><a href="seawater-properties.html#cb4-34" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">v=</span>xat, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb4-35"><a href="seawater-properties.html#cb4-35" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">h=</span>yat, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb4-36"><a href="seawater-properties.html#cb4-36" tabindex="-1"></a>    <span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>xat)</span>
+<span id="cb4-37"><a href="seawater-properties.html#cb4-37" tabindex="-1"></a>    <span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span>yat, <span class="at">las=</span><span class="dv">2</span>)</span>
+<span id="cb4-38"><a href="seawater-properties.html#cb4-38" tabindex="-1"></a>    <span class="fu">mtext</span>(<span class="st">&quot;Absolute salinity [g/kg]&quot;</span>, <span class="at">side=</span><span class="dv">2</span>, <span class="at">line=</span><span class="dv">4</span>)</span>
+<span id="cb4-39"><a href="seawater-properties.html#cb4-39" tabindex="-1"></a>    <span class="fu">contour</span>(t_insitu, SA, cps_rel[,,i], <span class="at">levels=</span>zat_rel, </span>
+<span id="cb4-40"><a href="seawater-properties.html#cb4-40" tabindex="-1"></a>            <span class="at">labels=</span>zat_rel, <span class="at">labcex=</span><span class="dv">1</span>, <span class="at">add=</span>T)</span>
+<span id="cb4-41"><a href="seawater-properties.html#cb4-41" tabindex="-1"></a>    <span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="fu">paste0</span>(p[i], <span class="st">&quot; dbar&quot;</span>), <span class="at">lty=</span><span class="cn">NA</span>, <span class="at">pch=</span><span class="cn">NA</span>, <span class="at">lwd=</span><span class="cn">NA</span>, <span class="at">bty=</span><span class="st">&quot;n&quot;</span>)</span>
+<span id="cb4-42"><a href="seawater-properties.html#cb4-42" tabindex="-1"></a>}</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:gsw-cp"></span>
 <img src="bookdown_files/figure-html/gsw-cp-1.svg" alt="Heat capacity of seawater $c_p$ as a function of in-situ temperature $t$ and absolute salinity $S_A$ (in m$^2$ s$^{-2}$ K$^{-1}$, left) and relative to $c_{p,0}$ = 3991.86795711963 m$^2$ s$^{-2}$ K$^{-1}$ (in %, right) at different depths." width="1152" />
 <p class="caption">
 Fig. 1.2: Heat capacity of seawater <span class="math inline">\(c_p\)</span> as a function of in-situ temperature <span class="math inline">\(t\)</span> and absolute salinity <span class="math inline">\(S_A\)</span> (in m<span class="math inline">\(^2\)</span> s<span class="math inline">\(^{-2}\)</span> K<span class="math inline">\(^{-1}\)</span>, left) and relative to <span class="math inline">\(c_{p,0}\)</span> = 3991.86795711963 m<span class="math inline">\(^2\)</span> s<span class="math inline">\(^{-2}\)</span> K<span class="math inline">\(^{-1}\)</span> (in %, right) at different depths.
@@ -617,52 +646,52 @@ Fig. 1.2: Heat capacity of seawater <span class="math inline">\(c_p\)</span> as 
 <p><br />
 </p>
 </div>
-<div id="speed-of-sound" class="section level2" number="1.3">
-<h2><span class="header-section-number">1.3</span> speed of sound</h2>
+<div id="speed-of-sound" class="section level2 hasAnchor" number="1.3">
+<h2><span class="header-section-number">1.3</span> speed of sound<a href="seawater-properties.html#speed-of-sound" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Fig. <a href="seawater-properties.html#fig:gsw-sos">1.3</a> shows the influence of in-situ temperature <span class="math inline">\(t\)</span> and absolute salinity <span class="math inline">\(S_A\)</span> on speed of sound <span class="math inline">\(c\)</span> at different pressure <span class="math inline">\(p\)</span> levels.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="seawater-properties.html#cb4-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1000</span>, <span class="dv">2000</span>, <span class="dv">4000</span>)</span>
-<span id="cb4-2"><a href="seawater-properties.html#cb4-2" aria-hidden="true" tabindex="-1"></a>SA <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">40</span>, <span class="at">l=</span><span class="dv">100</span>)</span>
-<span id="cb4-3"><a href="seawater-properties.html#cb4-3" aria-hidden="true" tabindex="-1"></a>t_insitu <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">30</span>, <span class="at">l=</span><span class="dv">100</span>)</span>
-<span id="cb4-4"><a href="seawater-properties.html#cb4-4" aria-hidden="true" tabindex="-1"></a>soss <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim=</span><span class="fu">c</span>(<span class="fu">length</span>(SA), <span class="fu">length</span>(SA), <span class="fu">length</span>(p)))</span>
-<span id="cb4-5"><a href="seawater-properties.html#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(p)) {</span>
-<span id="cb4-6"><a href="seawater-properties.html#cb4-6" aria-hidden="true" tabindex="-1"></a>    soss[,,i] <span class="ot">&lt;-</span> <span class="fu">outer</span>(SA, t_insitu, <span class="cf">function</span>(x,y) gsw<span class="sc">::</span><span class="fu">gsw_sound_speed_t_exact</span>(<span class="at">SA=</span>x, <span class="at">t=</span>y, <span class="at">p=</span>p[i]))</span>
-<span id="cb4-7"><a href="seawater-properties.html#cb4-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-8"><a href="seawater-properties.html#cb4-8" aria-hidden="true" tabindex="-1"></a>zlim <span class="ot">&lt;-</span> <span class="fu">range</span>(soss, <span class="at">na.rm=</span>T)</span>
-<span id="cb4-9"><a href="seawater-properties.html#cb4-9" aria-hidden="true" tabindex="-1"></a>zat <span class="ot">&lt;-</span> <span class="fu">pretty</span>(zlim, <span class="at">n=</span><span class="dv">15</span>)</span>
-<span id="cb4-10"><a href="seawater-properties.html#cb4-10" aria-hidden="true" tabindex="-1"></a>sos0 <span class="ot">&lt;-</span> <span class="fu">mean</span>(soss, <span class="at">na.rm=</span>T)</span>
-<span id="cb4-11"><a href="seawater-properties.html#cb4-11" aria-hidden="true" tabindex="-1"></a>soss_rel <span class="ot">&lt;-</span> soss<span class="sc">/</span>sos0<span class="sc">*</span><span class="dv">100</span> <span class="sc">-</span> <span class="dv">100</span></span>
-<span id="cb4-12"><a href="seawater-properties.html#cb4-12" aria-hidden="true" tabindex="-1"></a>zlim_rel <span class="ot">&lt;-</span> <span class="fu">range</span>(soss_rel, <span class="at">na.rm=</span>T)</span>
-<span id="cb4-13"><a href="seawater-properties.html#cb4-13" aria-hidden="true" tabindex="-1"></a>zat_rel <span class="ot">&lt;-</span> <span class="fu">pretty</span>(zlim_rel, <span class="at">n=</span><span class="dv">15</span>)</span>
-<span id="cb4-14"><a href="seawater-properties.html#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="fu">length</span>(p), <span class="dv">2</span>), <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">4</span>, <span class="dv">2</span>))</span>
-<span id="cb4-15"><a href="seawater-properties.html#cb4-15" aria-hidden="true" tabindex="-1"></a>xat <span class="ot">&lt;-</span> <span class="fu">pretty</span>(t_insitu, <span class="at">n=</span><span class="dv">15</span>)</span>
-<span id="cb4-16"><a href="seawater-properties.html#cb4-16" aria-hidden="true" tabindex="-1"></a>yat <span class="ot">&lt;-</span> <span class="fu">pretty</span>(SA, <span class="at">n=</span><span class="dv">15</span>)</span>
-<span id="cb4-17"><a href="seawater-properties.html#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(p)) { </span>
-<span id="cb4-18"><a href="seawater-properties.html#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># absolute plots</span></span>
-<span id="cb4-19"><a href="seawater-properties.html#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(t_insitu, SA, <span class="at">t=</span><span class="st">&quot;n&quot;</span>, <span class="at">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">yaxt=</span><span class="st">&quot;n&quot;</span>,</span>
-<span id="cb4-20"><a href="seawater-properties.html#cb4-20" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">&quot;In-situ temperature [°C]&quot;</span>, <span class="at">ylab=</span><span class="cn">NA</span>,</span>
-<span id="cb4-21"><a href="seawater-properties.html#cb4-21" aria-hidden="true" tabindex="-1"></a>         <span class="at">xaxs=</span><span class="st">&quot;i&quot;</span>, <span class="at">yaxs=</span><span class="st">&quot;i&quot;</span>)</span>
-<span id="cb4-22"><a href="seawater-properties.html#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">v=</span>xat, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
-<span id="cb4-23"><a href="seawater-properties.html#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">h=</span>yat, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
-<span id="cb4-24"><a href="seawater-properties.html#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>xat)</span>
-<span id="cb4-25"><a href="seawater-properties.html#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span>yat, <span class="at">las=</span><span class="dv">2</span>)</span>
-<span id="cb4-26"><a href="seawater-properties.html#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtext</span>(<span class="st">&quot;Absolute salinity [g/kg]&quot;</span>, <span class="at">side=</span><span class="dv">2</span>, <span class="at">line=</span><span class="dv">4</span>)</span>
-<span id="cb4-27"><a href="seawater-properties.html#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">contour</span>(t_insitu, SA, soss[,,i], <span class="at">levels=</span>zat, <span class="at">labcex=</span><span class="dv">1</span>, <span class="at">add=</span>T)</span>
-<span id="cb4-28"><a href="seawater-properties.html#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">contour</span>(t_insitu, SA, soss[,,i], <span class="at">levels=</span>sos0, <span class="at">labcex=</span><span class="dv">1</span>, <span class="at">col=</span><span class="st">&quot;red&quot;</span>, <span class="at">add=</span>T)</span>
-<span id="cb4-29"><a href="seawater-properties.html#cb4-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="fu">paste0</span>(p[i], <span class="st">&quot; dbar&quot;</span>), <span class="at">lty=</span><span class="cn">NA</span>, <span class="at">pch=</span><span class="cn">NA</span>, <span class="at">lwd=</span><span class="cn">NA</span>, <span class="at">bty=</span><span class="st">&quot;n&quot;</span>)</span>
-<span id="cb4-30"><a href="seawater-properties.html#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># relative plots</span></span>
-<span id="cb4-31"><a href="seawater-properties.html#cb4-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">plot</span>(t_insitu, SA, <span class="at">t=</span><span class="st">&quot;n&quot;</span>, <span class="at">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">yaxt=</span><span class="st">&quot;n&quot;</span>,</span>
-<span id="cb4-32"><a href="seawater-properties.html#cb4-32" aria-hidden="true" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">&quot;In-situ temperature [°C]&quot;</span>, <span class="at">ylab=</span><span class="cn">NA</span>,</span>
-<span id="cb4-33"><a href="seawater-properties.html#cb4-33" aria-hidden="true" tabindex="-1"></a>         <span class="at">xaxs=</span><span class="st">&quot;i&quot;</span>, <span class="at">yaxs=</span><span class="st">&quot;i&quot;</span>)</span>
-<span id="cb4-34"><a href="seawater-properties.html#cb4-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">v=</span>xat, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
-<span id="cb4-35"><a href="seawater-properties.html#cb4-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">h=</span>yat, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
-<span id="cb4-36"><a href="seawater-properties.html#cb4-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>xat)</span>
-<span id="cb4-37"><a href="seawater-properties.html#cb4-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span>yat, <span class="at">las=</span><span class="dv">2</span>)</span>
-<span id="cb4-38"><a href="seawater-properties.html#cb4-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtext</span>(<span class="st">&quot;Absolute salinity [g/kg]&quot;</span>, <span class="at">side=</span><span class="dv">2</span>, <span class="at">line=</span><span class="dv">4</span>)</span>
-<span id="cb4-39"><a href="seawater-properties.html#cb4-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">contour</span>(t_insitu, SA, soss_rel[,,i], <span class="at">levels=</span>zat_rel, </span>
-<span id="cb4-40"><a href="seawater-properties.html#cb4-40" aria-hidden="true" tabindex="-1"></a>            <span class="at">labels=</span>zat_rel, <span class="at">labcex=</span><span class="dv">1</span>, <span class="at">add=</span>T)</span>
-<span id="cb4-41"><a href="seawater-properties.html#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="fu">paste0</span>(p[i], <span class="st">&quot; dbar&quot;</span>), <span class="at">lty=</span><span class="cn">NA</span>, <span class="at">pch=</span><span class="cn">NA</span>, <span class="at">lwd=</span><span class="cn">NA</span>, <span class="at">bty=</span><span class="st">&quot;n&quot;</span>)</span>
-<span id="cb4-42"><a href="seawater-properties.html#cb4-42" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<div class="figure" style="text-align: center"><span id="fig:gsw-sos"></span>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="seawater-properties.html#cb5-1" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1000</span>, <span class="dv">2000</span>, <span class="dv">4000</span>)</span>
+<span id="cb5-2"><a href="seawater-properties.html#cb5-2" tabindex="-1"></a>SA <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">40</span>, <span class="at">l=</span><span class="dv">100</span>)</span>
+<span id="cb5-3"><a href="seawater-properties.html#cb5-3" tabindex="-1"></a>t_insitu <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">30</span>, <span class="at">l=</span><span class="dv">100</span>)</span>
+<span id="cb5-4"><a href="seawater-properties.html#cb5-4" tabindex="-1"></a>soss <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="cn">NA</span>, <span class="at">dim=</span><span class="fu">c</span>(<span class="fu">length</span>(SA), <span class="fu">length</span>(SA), <span class="fu">length</span>(p)))</span>
+<span id="cb5-5"><a href="seawater-properties.html#cb5-5" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(p)) {</span>
+<span id="cb5-6"><a href="seawater-properties.html#cb5-6" tabindex="-1"></a>    soss[,,i] <span class="ot">&lt;-</span> <span class="fu">outer</span>(SA, t_insitu, <span class="cf">function</span>(x,y) gsw<span class="sc">::</span><span class="fu">gsw_sound_speed_t_exact</span>(<span class="at">SA=</span>x, <span class="at">t=</span>y, <span class="at">p=</span>p[i]))</span>
+<span id="cb5-7"><a href="seawater-properties.html#cb5-7" tabindex="-1"></a>}</span>
+<span id="cb5-8"><a href="seawater-properties.html#cb5-8" tabindex="-1"></a>zlim <span class="ot">&lt;-</span> <span class="fu">range</span>(soss, <span class="at">na.rm=</span>T)</span>
+<span id="cb5-9"><a href="seawater-properties.html#cb5-9" tabindex="-1"></a>zat <span class="ot">&lt;-</span> <span class="fu">pretty</span>(zlim, <span class="at">n=</span><span class="dv">15</span>)</span>
+<span id="cb5-10"><a href="seawater-properties.html#cb5-10" tabindex="-1"></a>sos0 <span class="ot">&lt;-</span> <span class="fu">mean</span>(soss, <span class="at">na.rm=</span>T)</span>
+<span id="cb5-11"><a href="seawater-properties.html#cb5-11" tabindex="-1"></a>soss_rel <span class="ot">&lt;-</span> soss<span class="sc">/</span>sos0<span class="sc">*</span><span class="dv">100</span> <span class="sc">-</span> <span class="dv">100</span></span>
+<span id="cb5-12"><a href="seawater-properties.html#cb5-12" tabindex="-1"></a>zlim_rel <span class="ot">&lt;-</span> <span class="fu">range</span>(soss_rel, <span class="at">na.rm=</span>T)</span>
+<span id="cb5-13"><a href="seawater-properties.html#cb5-13" tabindex="-1"></a>zat_rel <span class="ot">&lt;-</span> <span class="fu">pretty</span>(zlim_rel, <span class="at">n=</span><span class="dv">15</span>)</span>
+<span id="cb5-14"><a href="seawater-properties.html#cb5-14" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="fu">length</span>(p), <span class="dv">2</span>), <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">4</span>, <span class="dv">2</span>))</span>
+<span id="cb5-15"><a href="seawater-properties.html#cb5-15" tabindex="-1"></a>xat <span class="ot">&lt;-</span> <span class="fu">pretty</span>(t_insitu, <span class="at">n=</span><span class="dv">15</span>)</span>
+<span id="cb5-16"><a href="seawater-properties.html#cb5-16" tabindex="-1"></a>yat <span class="ot">&lt;-</span> <span class="fu">pretty</span>(SA, <span class="at">n=</span><span class="dv">15</span>)</span>
+<span id="cb5-17"><a href="seawater-properties.html#cb5-17" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(p)) { </span>
+<span id="cb5-18"><a href="seawater-properties.html#cb5-18" tabindex="-1"></a>    <span class="co"># absolute plots</span></span>
+<span id="cb5-19"><a href="seawater-properties.html#cb5-19" tabindex="-1"></a>    <span class="fu">plot</span>(t_insitu, SA, <span class="at">t=</span><span class="st">&quot;n&quot;</span>, <span class="at">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">yaxt=</span><span class="st">&quot;n&quot;</span>,</span>
+<span id="cb5-20"><a href="seawater-properties.html#cb5-20" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">&quot;In-situ temperature [°C]&quot;</span>, <span class="at">ylab=</span><span class="cn">NA</span>,</span>
+<span id="cb5-21"><a href="seawater-properties.html#cb5-21" tabindex="-1"></a>         <span class="at">xaxs=</span><span class="st">&quot;i&quot;</span>, <span class="at">yaxs=</span><span class="st">&quot;i&quot;</span>)</span>
+<span id="cb5-22"><a href="seawater-properties.html#cb5-22" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">v=</span>xat, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb5-23"><a href="seawater-properties.html#cb5-23" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">h=</span>yat, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb5-24"><a href="seawater-properties.html#cb5-24" tabindex="-1"></a>    <span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>xat)</span>
+<span id="cb5-25"><a href="seawater-properties.html#cb5-25" tabindex="-1"></a>    <span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span>yat, <span class="at">las=</span><span class="dv">2</span>)</span>
+<span id="cb5-26"><a href="seawater-properties.html#cb5-26" tabindex="-1"></a>    <span class="fu">mtext</span>(<span class="st">&quot;Absolute salinity [g/kg]&quot;</span>, <span class="at">side=</span><span class="dv">2</span>, <span class="at">line=</span><span class="dv">4</span>)</span>
+<span id="cb5-27"><a href="seawater-properties.html#cb5-27" tabindex="-1"></a>    <span class="fu">contour</span>(t_insitu, SA, soss[,,i], <span class="at">levels=</span>zat, <span class="at">labcex=</span><span class="dv">1</span>, <span class="at">add=</span>T)</span>
+<span id="cb5-28"><a href="seawater-properties.html#cb5-28" tabindex="-1"></a>    <span class="fu">contour</span>(t_insitu, SA, soss[,,i], <span class="at">levels=</span>sos0, <span class="at">labcex=</span><span class="dv">1</span>, <span class="at">col=</span><span class="st">&quot;red&quot;</span>, <span class="at">add=</span>T)</span>
+<span id="cb5-29"><a href="seawater-properties.html#cb5-29" tabindex="-1"></a>    <span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="fu">paste0</span>(p[i], <span class="st">&quot; dbar&quot;</span>), <span class="at">lty=</span><span class="cn">NA</span>, <span class="at">pch=</span><span class="cn">NA</span>, <span class="at">lwd=</span><span class="cn">NA</span>, <span class="at">bty=</span><span class="st">&quot;n&quot;</span>)</span>
+<span id="cb5-30"><a href="seawater-properties.html#cb5-30" tabindex="-1"></a>    <span class="co"># relative plots</span></span>
+<span id="cb5-31"><a href="seawater-properties.html#cb5-31" tabindex="-1"></a>    <span class="fu">plot</span>(t_insitu, SA, <span class="at">t=</span><span class="st">&quot;n&quot;</span>, <span class="at">xaxt=</span><span class="st">&quot;n&quot;</span>, <span class="at">yaxt=</span><span class="st">&quot;n&quot;</span>,</span>
+<span id="cb5-32"><a href="seawater-properties.html#cb5-32" tabindex="-1"></a>         <span class="at">xlab=</span><span class="st">&quot;In-situ temperature [°C]&quot;</span>, <span class="at">ylab=</span><span class="cn">NA</span>,</span>
+<span id="cb5-33"><a href="seawater-properties.html#cb5-33" tabindex="-1"></a>         <span class="at">xaxs=</span><span class="st">&quot;i&quot;</span>, <span class="at">yaxs=</span><span class="st">&quot;i&quot;</span>)</span>
+<span id="cb5-34"><a href="seawater-properties.html#cb5-34" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">v=</span>xat, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb5-35"><a href="seawater-properties.html#cb5-35" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">h=</span>yat, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="fl">0.5</span>)</span>
+<span id="cb5-36"><a href="seawater-properties.html#cb5-36" tabindex="-1"></a>    <span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>xat)</span>
+<span id="cb5-37"><a href="seawater-properties.html#cb5-37" tabindex="-1"></a>    <span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span>yat, <span class="at">las=</span><span class="dv">2</span>)</span>
+<span id="cb5-38"><a href="seawater-properties.html#cb5-38" tabindex="-1"></a>    <span class="fu">mtext</span>(<span class="st">&quot;Absolute salinity [g/kg]&quot;</span>, <span class="at">side=</span><span class="dv">2</span>, <span class="at">line=</span><span class="dv">4</span>)</span>
+<span id="cb5-39"><a href="seawater-properties.html#cb5-39" tabindex="-1"></a>    <span class="fu">contour</span>(t_insitu, SA, soss_rel[,,i], <span class="at">levels=</span>zat_rel, </span>
+<span id="cb5-40"><a href="seawater-properties.html#cb5-40" tabindex="-1"></a>            <span class="at">labels=</span>zat_rel, <span class="at">labcex=</span><span class="dv">1</span>, <span class="at">add=</span>T)</span>
+<span id="cb5-41"><a href="seawater-properties.html#cb5-41" tabindex="-1"></a>    <span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, <span class="fu">paste0</span>(p[i], <span class="st">&quot; dbar&quot;</span>), <span class="at">lty=</span><span class="cn">NA</span>, <span class="at">pch=</span><span class="cn">NA</span>, <span class="at">lwd=</span><span class="cn">NA</span>, <span class="at">bty=</span><span class="st">&quot;n&quot;</span>)</span>
+<span id="cb5-42"><a href="seawater-properties.html#cb5-42" tabindex="-1"></a>}</span></code></pre></div>
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:gsw-sos"></span>
 <img src="bookdown_files/figure-html/gsw-sos-1.svg" alt="Speed of sound $c$ as a function of in-situ temperature $t$ and absolute salinity $S_A$ (in m s$^{-1}$, left) and relative to $c_0$ = 1510 m s$^{-1}$ (in %, right) at different depths." width="1152" />
 <p class="caption">
 Fig. 1.3: Speed of sound <span class="math inline">\(c\)</span> as a function of in-situ temperature <span class="math inline">\(t\)</span> and absolute salinity <span class="math inline">\(S_A\)</span> (in m s<span class="math inline">\(^{-1}\)</span>, left) and relative to <span class="math inline">\(c_0\)</span> = 1510 m s<span class="math inline">\(^{-1}\)</span> (in %, right) at different depths.
@@ -683,7 +712,6 @@ Fig. 1.3: Speed of sound <span class="math inline">\(c\)</span> as a function of
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -713,6 +741,10 @@ gitbook.start({
 "text": null
 },
 "download": ["bookdown.pdf", "bookdown.epub", "bookdown.mobi"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "none"
 }
@@ -726,7 +758,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');
